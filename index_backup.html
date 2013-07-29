@@ -3,7 +3,7 @@
 
 <p>The performance conversation is starting to change.</p>
 
-<p>We've been comparing the web's performance on mobile to the performance of native and it's no longer just important to consider how quickly a site loads but also how well it renders and runs. We all want our user experiences on the web (whatever device we're using to access it) to be <strong>snappy</strong>, smooth and delightful. What this means is that even if the browser is busy <a href="http://taligarsiel.com/Projects/howbrowserswork1.htm#The_rendering_engine">rendering</a> the page (i.e drawing it) or loading in content, the user should still be able to scroll around and interact with it without any slow-down - no one likes seeing visual glitchyness!.</p>
+<p>We're regularly comparing the web's performance on mobile to the performance of native and it's no longer just important to consider how quickly a site loads but also how well it runs. We all want our user experiences on the web (whatever device we're using to access it) to be <strong>snappy</strong>, smooth and delightful. What this means is that even if the browser is busy <a href="http://taligarsiel.com/Projects/howbrowserswork1.htm#The_rendering_engine">rendering</a> the page (i.e drawing it) or loading in content, the user should still be able to scroll around and interact with it without any slow-down - no one likes seeing visual glitchyness!.</p>
 
 <p>This can be a challenge as mobile devices are underpowered when compared to our shiny desktop systems. Painting the page to the screen takes longer, loading network resources takes longer, decoding images takes longer and executing scripts takes longer. Your performance on mobile is almost never equal to your performance on desktop. Some would even say it can be between 5 to 10 times slower.</p>
 
@@ -91,7 +91,9 @@
 
 <h3>DevTools: Timeline 101</h3>
 
-<p>In Chrome and Opera, the DevTools Timeline panel provides an overview of where time is spent loading up your web application such as how long it takes to process DOM events, render page layouts or paint elements to the screen. It allows you to drill down into three separate facets that can help discover why your application is slow: Events, Frames and actual Memory usage. Right now, we're interested in Frames mode, which gives you insight into the tasks the browser had to perform to generate a single frame (update) of your application for presentation on the screen.</p>
+<p>The Timeline panel provides an overview of where time is spent loading up your web application such as how long it takes to process DOM events, render page layouts or paint elements to the screen. It allows you to drill down into three separate facets that can help discover why your application is slow: Events, Frames and actual Memory usage.</p>
+
+ <p>For this article, we're interested in Frames mode, which gives you insight into the tasks Chrome had to perform to generate a single frame (update) of your application for presentation on the screen.</p>
 
 <img src="images/frames.png"/>
 
@@ -114,11 +116,10 @@
 
 <img src="images/layout.jpg" alt="">
 
-<h2>What is a paint?</h2>
-<p>During a user&rsquo;s interaction with a page, only <strong>parts </strong>of it will be changed. For example, they may perform an action changing visibility or adding an outline to an element. The actual process of <strong>updating </strong>the screen is known as a paint. Changes to your page (e.g JavaScript has modified CSS styles) invalidate the rectangle you see on the screen and cause your browser to view it as &quot;damaged&quot; (this is known as a damage rect).</p>
-<p>A <strong>paint </strong>is an expensive operation performance wise and can make your page look sluggish, which you ideally want to avoid. In Chrome, we keep an eye on what in the screen needs to be changed, creating a damage rectangle with the coordinates to parts of the page requiring repainting.</p>
+<h2>What is a repaint?</h2>
+<p>During a user&rsquo;s interaction with a page, only <strong>parts </strong>of it will be changed. For example, they may perform an action changing visibility or adding an outline to an element. The actual process of <strong>updating </strong>the screen is known as a repaint. Changes to your page (e.g JavaScript has modified CSS styles) invalidate the rectangle you see on the screen and cause your browser to view it as &quot;damaged&quot; (this is known as a damage rect).</p>
+<p>A <strong>repaint </strong>is an expensive operation performance wise and can make your page look sluggish, which you ideally want to avoid. In Chrome, we keep an eye on what in the screen needs to be changed, creating a damage rectangle with the coordinates to parts of the page requiring repainting.</p>
 <p>We save the old rectangle, prior to your changes, as a bitmap and then only paint the delta between the new rectangle and the old one. If you notice that there are particular areas of a page that require a lot of repainting, it&rsquo;s useful to investigate what can be done to reduce the painting cost.</p>
-
 <h2>Diagnosing Slow Paint Times - A Timeline Workflow</h2>
 <p>Before we explore an updated workflow for reducing repaints and jank, let&rsquo;s first look at a new shortcut that was introduced to help with this.</p>
 
@@ -193,28 +194,15 @@ Again, don't use this hack on every element on the page - it might pass muster o
 <p><img alt="" class="alignnone size-large wp-image-5109" height="389" src="images/image01-1024x665.png" title="image01" width="600" /></p>
 <p>Keep in mind that just tracking the FPS counter may lead to you not noticing frames with intermittent jank. Be careful when using the content. It is also worth noting that FPS on desktop does not equal FPS on devices and special care should be taken to profile the performance there too.</p>
 
-<h2>Tutorial: Getting a jank-free mobile web experience</h2>
+<h3>Tutorial: Going Glitch-Free</h3>
 
-<p>We've talked the talk, but let's look at a simple app with some janky animation and see if we can optimize it to be jank-free. Now remember that the performance of your page on mobile differs greatly from what it does on desktop. Luckily browsers like Chrome and Opera expose tooling that can profile both your rendering performance on desktop as well as your performance on connected mobile devices. This is done via remote debugging, which you'll need to get setup before you can profile your pages on mobile.</p>
+<p>
+Let's look at an animation sample with janky animation and see if we can improve it to better visualize what it means to be jank-free.</p>
 
 <img src="images/pre.png"/>
 
-<h3>Setting Up Remote Debugging</h3>
-
-<p>You'll normally remotely debug your pages over USB. As long as your mobile device is connected to your development machine, you'll be able to profile pages using the Timeline as well as view and edit HTML, scripts and styles under you have an optimized page which behaves a little better on all of your target devices.</p>
-
-<p>To get remote debugging setup for your version of Chrome or Opera, follow the remote debugging guide over in the Chrome Developer Tools documentation. You'll then be able to work through tutorial below on either a real mobile device or your desktop.</p>
-
-<p>Note that the docs above will also give you two choices for accessing pages you would like to debug on your device. You can either open up the page on your device's browser or if you would prefer, use a new feature called reverse-port forwarding to debug a locally hosted version of your code on your device.</p>
-
-<h3>Let's get optimizing!</h3>
-
-<p><div class="screenshot"><img width="722" alt="Debugging Chrome for Android using the Chrome Developer Tools" src="images/remote-debug-overview.png"/></div></p>
-
-<p>Now that you hopefully have remote debugging setup:</p>
-
 <p>1. Open up <a href="http://jsfiddle.net/AxEJY/">http://jsfiddle.net/AxEJY/</a>. </p>
-<p>2. Click 'animate!'. As you can see there is a visual break in motion, resulting in a suboptimal animation. We can record a Timeline session during the animation of this page to confirm that we have an issue hitting an optimal frame rate. The animation performs far worse on mobile than it does on desktop because we're working with more limited GPU.</p>
+<p>2. Click 'animate!'. As you can see there is a visual break in motion, resulting in a suboptimal animation. We can record a Timeline session during the animation of this page to confirm that we have an issue hitting an optimal frame rate. </p>
 <p>3. Let's see what's causing things to slow down. Here's the JavaScript for our animation as well as the CSS.
 
 <p>JavaScript:</p>
@@ -317,7 +305,7 @@ function update(timestamp) {
 
 <h2>Apply fix within DevTools</h2>
 
-    <p>Now that we have an idea what's causing the performance issues, we can modify the JavaScript file directly in the Sources panel and test our changes on desktop or our mobile device right away.</p>
+    <p>Now that we have an idea what's causing the performance issues, we can modify the JavaScript file directly in the Sources panel and test our changes right away.</p>
     
     <ol>
         <li>In the Sources panel that was opened previously, replace line 43 with the following code.</li>
@@ -338,10 +326,12 @@ function update(timestamp) {
 
 <p><img src="images/post.png"/></p>
 
+<p>Re-do your Timeline recording and you will now see that performance has greatly improved.</p>
+
 
 <h2>Pro-tips:</h2>
 
-<p>Your JavaScript can annotate DevTools Timeline recordings using <code>console.timeStamp()</code> which works regardless of whether you're using remote debugging or not. See below for 'Adding result', an annotation added by our code during profiling:</p>
+<p>Your JavaScript can annotate DevTools Timeline recordings using console.timeStamp(). See below for 'Adding result', an annotation added by our code during profiling:</p>
 
 <img src="images/timestamp.png" alt="">
 
@@ -364,34 +354,36 @@ function update(timestamp) {
 <img src="images/trans.png" alt="">
 
 
+
+
+<!-- this needs to be summarized -->
+
+<h2>Setup Remote Debugging</h2>
+
+<p>The performance of your page on mobile differs greatly from what it does on desktop. Luckily browsers like Chrome and Opera expose tooling that can profile both your rendering performance on desktop as well as your performance on connected mobile devices. This is done via remote debugging, which you'll need to get setup before you can profile your pages on mobile.</p>
+
+<p>You'll normally remotely debug your pages over USB. As long as your mobile device is connected to your development machine, you'll be able to profile pages using the Timeline as well as view and edit HTML, scripts and styles under you have an optimized page which behaves a little better on all of your target devices.</p>
+
+<p>To get remote debugging setup for your version of Chrome or Opera, follow the remote debugging guide over in the Chrome Developer Tools documentation. You'll then be able to run the below tutorial on either a real mobile device or your desktop.</p>
+
+
+<p><div class="screenshot"><img width="722" alt="Debugging Chrome for Android using the Chrome Developer Tools" src="images/remote-debug-overview.png"/></div></p>
+
+<!-- todo -->
+
 <h2>Paint profiling tools in other browsers</h2>
 
 <p>Firefox - paint flashing, IE11 - ? Webkit Nightlies - layout viewer.</p>
 
-<p>The Firefox nightlies have a feature called paint flashing which can also be used to determine what regions of the page the browser is repainting. With paint flashing turned on, each region is tinted with a random color making it really easy to distinguish one region from another. Regions with really heavy paint flashing are the ones that are going to cost you, so try to minimize them as much as possible.</p>
-
-<p>
-    <ol>
-    <li>Check to ensure you have Firefox 11 or higher installed (Beta, Aurora, or Nightly).</li>
-    <li>Go to <strong>about:config</strong></li>
-    <li>Accept the warning that is displayed</li>
-    <li>Right-click and select <strong>New -&gt; Boolean</strong></li>
-    <li>Type <strong>nglayout.debug.paint_flashing</strong></li>
-    <li>Set the option to <strong>true</strong>. That's it!</li>
-    </ol>
-</p>
-
-
 
 <h2>Conclusions</h2>
 
-<p>Our mobile users want to be able to rapidly get information with as little delay as possible. In addition to making things look sexy, it's our responsibility to make sure that our pages are loading and rendering quickly, especially on mobile devices. If not, we risk our user engagement dropping and our user-experience suffering as well.</p>
+<p>Our mobile users want to be able to rapidly get information with as little delay as possible. It's our responsibility to make sure that our pages and loading and rendering quickly, especially on mobile devices. If not, we risk our user engagement dropping and our user-experience suffering as well.</p>
 
 <p>So, be sure to measure paint performance on both desktop and mobile. If all goes well, your users will end up with snappier, more silky-smooth experiences, regardless of the device they're using.To learn more about optimizing the paint performance of your pages, check out http://jankfree.org and the official Chrome DevTools <a href="https://developers.google.com/chrome-developer-tools/docs/using-timeline">documentation</a>.</p>
 
 <p>Although at the time of writing, Chrome and Opera have the best tools to profile paint performance (Safari and Firefox are also making lots of progress here!), we strongly recommend testing and measuring your pages in other browsers to get a feel for what your own users might experience (where feasible). Performance can vary massively between them, and a performance smell in one browser might not be present in another.</p>
 
 <p>Measure for yourself, understand the abstractions, know your browser's internals. In time, we hope that the cross- browser tooling for this area improves so that developers can get an accurate picture of rendering performance, regardless of the browser being used.</p>
-
 
 
