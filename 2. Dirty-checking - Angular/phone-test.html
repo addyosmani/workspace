@@ -1,0 +1,21 @@
+<!-- automatic persistence, save to disk/server -->
+<!-- constraint-based forms, update dependent values -->
+<html ng-app>
+  <head>
+    ...
+    <script src="angular.js"></script>
+    <script src="controller.js"></script>
+  </head>
+  <body ng-controller="PhoneListCtrl">
+    <ul>
+      <li ng-repeat="phone in phones">
+        {{phone.name}}
+        <p>{{phone.snippet}}</p>
+      </li>
+    </ul>
+  </body>
+</html>
+
+<!--
+  http://angular.github.io/angular-phonecat/step-2/app/
+-->
