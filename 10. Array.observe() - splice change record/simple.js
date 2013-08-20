@@ -1,4 +1,4 @@
-var model = [1];
+var model = ['Buy some milk', 'Learn to code', 'Wear some plaid'];
 var count = 0;
 
 Array.observe(model, function(changeRecords) {
@@ -6,5 +6,5 @@ Array.observe(model, function(changeRecords) {
   console.log('Array observe', changeRecords, count);
 });
 
-model[0] = 2;
-model[1] = 3;
+model[0] = 'Skip this step';
+model[1] = 'Paul Irish all the things';

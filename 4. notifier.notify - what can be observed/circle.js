@@ -1,5 +1,5 @@
 function Circle(radius) {
-    
+
     Object.defineOwnProperty(this, 'radius', {
         get: function () {
             return radius;
@@ -12,7 +12,8 @@ function Circle(radius) {
 
             // notify(changeRecord)
             notifier.notify({
-                type: 'updated', // deleted, new etc.
+                type: 'updated', // deleted, new, reconfigured etc.
+                // you can also just custom type (e.g 'foo')
                 name: 'radius',
                 oldValue: radius
             });
@@ -21,3 +22,11 @@ function Circle(radius) {
         }
     });
 }
+
+/*
+notifier.notify({
+    type: 'reconfigured', 
+    name: 'radius',
+    oldValue: 'circumference'
+});
+*/
