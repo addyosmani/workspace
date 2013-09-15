@@ -34,4 +34,4 @@ Object.observe(todoModel, function(changeRecords){
     );
   })
 });
-*.
+*/
